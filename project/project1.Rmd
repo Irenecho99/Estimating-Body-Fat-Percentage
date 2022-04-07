@@ -1,0 +1,129 @@
+---
+title: "Project#1"
+output: html_document
+---
+
+## Read data into R
+```{r}
+BodyFat = read.csv("/Users/irenecho/Desktop/stat 333/project/BodyFat.csv")
+attach(BodyFat)
+dim(BodyFat)
+```
+
+```{r}
+colnames(BodyFat)
+```
+
+## Analyzing Raw Data
+```{r}
+head(BodyFat) #Look at the first few data
+tail(BodyFat) #Look at the last few data
+```
+
+Weight and height are both measured in inches
+
+Neck, chest, abdomen are measured in ml (more precise)
+
+```{r}
+summary(BodyFat)
+```
+
+## Visualizing Data
+```{r}
+par(mfrow=c(3,2)) #create a matrix of 3X2 filled by row
+par(mgp=c(1.8,.0,0), mar=c(3,3,1,1)) 
+hist(BodyFat$BODYFAT, breaks = 30,
+     main="Histogram of Body Fat %", xlab = "Body Fat %")
+hist(BodyFat$DENSITY, breaks = 30,
+     main="Histogram of Density", xlab = "Density(Inches)")
+hist(BodyFat$AGE, breaks = 30,
+     main="Histogram of Age", xlab = "Age(years)")
+hist(BodyFat$WEIGHT, breaks = 30,
+     main="Histogram of Weight", xlab = "Weight(Ibs)")
+hist(BodyFat$HEIGHT, breaks = 30,
+     main="Histogram of Height", xlab = "Height(Inches)")
+```
+
+## Data Cleaning(Subset of Data)
+```{r}
+BodyFat[BodyFat$BODYFAT>=45|BodyFat$BODYFAT<3,]
+BodyFat[BodyFat$HEIGHT<40,]
+BodyFat[BodyFat$WEIGHT>300,]
+BodyFat[BodyFat$NECK>45,]
+BodyFat<- BodyFat[-c(172,182,216,42,39),]
+summary(BodyFat)
+```
+
+## Statistical Modeling and Analysis
+```{r}
+plot(BodyFat$AGE,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Age(yrs)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Age")
+
+plot(BodyFat$WEIGHT,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Weight(Ibs)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Weight")
+
+plot(BodyFat$HEIGHT,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Height(Inches)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Height")
+  
+plot(BodyFat$ADIPOSITY,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Adiposity(bmi)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Adiposity")
+
+plot(BodyFat$NECK,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Neck(cm)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Neck")
+```
+
+
+```{r}
+plot(BodyFat$NECK,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Neck(cm)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Neck")
+lmmodel= lm(BODYFAT ~ NECK  )
+abline(lmmodel, col="blue", lwd=5)
+summary(lmmodel)
+```
+explains about 24.16% of variation in body fat
+
+```{r}
+plot(BodyFat$ADIPOSITY,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Adiposity(bmi)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Adiposity")
+lmmodel= lm(BODYFAT ~ ADIPOSITY  )
+abline(lmmodel, col="blue", lwd=5)
+summary(lmmodel)
+```
+explains about 53% of variation in body fat
+
+```{r}
+plot(BodyFat$HEIGHT,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Height(Inches)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Height")
+lmmodel= lm(BODYFAT ~ HEIGHT  )
+abline(lmmodel, col="blue", lwd=5)
+summary(lmmodel)
+```
+explains about 0.79% of variation in body fat
+
+```{r}
+plot(BodyFat$WEIGHT,BodyFat$BODYFAT,pch=19, cex=1.2, cex.lab=1.5, cex.main=1.5,
+     xlab="Weight(Ibs)", ylab="Body Fat %", main="Scatterplot of Body Fat % and Weight")
+lmmodel= lm(BODYFAT ~ WEIGHT)
+abline(lmmodel, col="blue", lwd=5)
+summary(lmmodel)
+```
+explains about 37.6% of variation in body fat
+
+```{r}
+lmmodel= lm(BODYFAT ~WEIGHT+ NECK + ADIPOSITY)
+summary(lmmodel)
+```
+
+
+reject the null that they are not related
+
+
+## Diagnostics
+Residual(homoskecidicity, no linear trend)
+
+QQ Plot(linearity)
+
+outlier/influential points(leverage values, cook's distance= no trend, no influential point)
+
+
+
